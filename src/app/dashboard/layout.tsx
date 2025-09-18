@@ -59,17 +59,17 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   }
 
   const navigation = [
-    { name: 'Overview', href: '/dashboard', icon: '📊' },
-    { name: 'Tables', href: '/dashboard/tables', icon: '🗂️' },
-    { name: 'Data Browser', href: '/dashboard/data', icon: '🔍' },
-    { name: 'API Explorer', href: '/dashboard/api', icon: '🔌' },
-    { name: 'Users', href: '/dashboard/users', icon: '👥' },
+    { name: 'Overview', href: '/dashboard', icon: '' },
+    { name: 'Tables', href: '/dashboard/tables', icon: '' },
+    { name: 'Data Browser', href: '/dashboard/data', icon: '' },
+    { name: 'API Explorer', href: '/dashboard/api', icon: '' },
+    { name: 'Users', href: '/dashboard/users', icon: '' },
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <div className="min-h-screen bg-white flex">
       {/* Sidebar */}
-      <div className={`${sidebarOpen ? 'w-64' : 'w-16'} bg-white shadow-sm transition-all duration-300 ease-in-out`}>
+      <div className={`${sidebarOpen ? 'w-64' : 'w-16'} bg-white border-r border-gray-200 transition-all duration-300 ease-in-out`}>
         <div className="flex flex-col h-full">
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-gray-200">
@@ -81,7 +81,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               onClick={() => setSidebarOpen(!sidebarOpen)}
               className="p-2 rounded-md hover:bg-gray-100 transition-colors"
             >
-              {sidebarOpen ? '◀' : '▶'}
+              {sidebarOpen ? '←' : '→'}
             </button>
           </div>
 
@@ -93,7 +93,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 href={item.href}
                 className="flex items-center p-3 text-gray-700 rounded-md hover:bg-gray-100 transition-colors group"
               >
-                <span className="text-lg">{item.icon}</span>
                 <span className={`${sidebarOpen ? 'ml-3' : 'hidden'} transition-all`}>
                   {item.name}
                 </span>
@@ -111,10 +110,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               onClick={handleLogout}
               className="flex items-center w-full p-2 text-gray-700 rounded-md hover:bg-gray-100 transition-colors"
             >
-              <span className="text-lg">🚪</span>
-              <span className={`${sidebarOpen ? 'ml-3' : 'hidden'} transition-all`}>
-                Logout
-              </span>
+              <span className="text-sm">Logout</span>
             </button>
           </div>
         </div>
@@ -123,7 +119,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       {/* Main content */}
       <div className="flex-1 flex flex-col">
         {/* Top bar */}
-        <header className="bg-white shadow-sm border-b border-gray-200">
+        <header className="bg-white border-b border-gray-200">
           <div className="px-6 py-4">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold text-gray-900">Dashboard</h2>

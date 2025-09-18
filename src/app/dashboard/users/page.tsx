@@ -115,16 +115,16 @@ export default function UsersPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="page-container">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="page-header">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Users</h1>
-          <p className="text-gray-600">Manage application users</p>
+          <h1 className="page-title">Users</h1>
+          <p className="page-subtitle">Manage application users</p>
         </div>
         <button
           onClick={() => setShowCreateForm(true)}
-          className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
+          className="btn btn-primary"
         >
           Add User
         </button>
@@ -132,135 +132,116 @@ export default function UsersPage() {
 
       {/* Error message */}
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-md p-4">
-          <p className="text-red-700">{error}</p>
+        <div className="alert alert-error">
+          <p>{error}</p>
         </div>
       )}
 
       {/* Create user form */}
       {showCreateForm && (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">Create New User</h3>
-          <form onSubmit={createUser} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Email
-              </label>
-              <input
-                type="email"
-                value={newUser.email}
-                onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Username
-              </label>
-              <input
-                type="text"
-                value={newUser.username}
-                onChange={(e) => setNewUser({ ...newUser, username: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Password
-              </label>
-              <input
-                type="password"
-                value={newUser.password}
-                onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                required
-              />
-            </div>
-            <div className="flex space-x-3">
-              <button
-                type="submit"
-                className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
-              >
-                Create User
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setShowCreateForm(false);
-                  setNewUser({ email: '', username: '', password: '' });
-                }}
-                className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400 transition-colors"
-              >
-                Cancel
-              </button>
-            </div>
-          </form>
+        <div className="card">
+          <div className="card-body">
+            <h3 className="card-title mb-4">Create New User</h3>
+            <form onSubmit={createUser} className="space-y-4">
+              <div className="form-group">
+                <label className="form-label">Email</label>
+                <input
+                  type="email"
+                  value={newUser.email}
+                  onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+                  className="form-input"
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Username</label>
+                <input
+                  type="text"
+                  value={newUser.username}
+                  onChange={(e) => setNewUser({ ...newUser, username: e.target.value })}
+                  className="form-input"
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Password</label>
+                <input
+                  type="password"
+                  value={newUser.password}
+                  onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
+                  className="form-input"
+                  required
+                />
+              </div>
+              <div className="flex space-x-3">
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                >
+                  Create User
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowCreateForm(false);
+                    setNewUser({ email: '', username: '', password: '' });
+                  }}
+                  className="btn btn-secondary"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       )}
 
       {/* Users list */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h3 className="text-lg font-medium text-gray-900">Application Users</h3>
+      <div className="card">
+        <div className="card-header">
+          <h3 className="card-title">Application Users</h3>
         </div>
 
         {users.length === 0 ? (
-          <div className="text-center py-12">
-            <span className="text-4xl mb-4 block">👥</span>
+          <div className="card-body text-center py-12">
             <h4 className="text-lg font-medium text-gray-900 mb-2">No Users Found</h4>
             <p className="text-gray-500 mb-4">
               Create your first application user to get started.
             </p>
             <button
               onClick={() => setShowCreateForm(true)}
-              className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
+              className="btn btn-primary"
             >
               Add User
             </button>
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50">
+            <table className="table">
+              <thead className="table-header">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    ID
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Username
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Email
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Created
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
+                  <th className="table-header-cell">ID</th>
+                  <th className="table-header-cell">Username</th>
+                  <th className="table-header-cell">Email</th>
+                  <th className="table-header-cell">Created</th>
+                  <th className="table-header-cell">Actions</th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="table-body">
                 {users.map((user) => (
                   <tr key={user.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {user.id}
+                    <td className="table-cell">{user.id}</td>
+                    <td className="table-cell">
+                      <div className="font-medium">{user.username}</div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">{user.username}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{user.email}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="table-cell">{user.email}</td>
+                    <td className="table-cell text-gray-500">
                       {new Date(user.created_at).toLocaleDateString()}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <td className="table-cell">
                       <button
                         onClick={() => deleteUser(user.id)}
-                        className="text-red-600 hover:text-red-900 transition-colors"
+                        className="btn btn-sm btn-danger"
                       >
                         Delete
                       </button>
@@ -274,24 +255,26 @@ export default function UsersPage() {
       </div>
 
       {/* Stats */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <h3 className="text-lg font-medium text-gray-900 mb-4">Statistics</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="text-center">
-            <p className="text-2xl font-semibold text-blue-600">{users.length}</p>
-            <p className="text-sm text-gray-500">Total Users</p>
-          </div>
-          <div className="text-center">
-            <p className="text-2xl font-semibold text-green-600">
-              {users.filter(u => new Date(u.created_at) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)).length}
-            </p>
-            <p className="text-sm text-gray-500">New This Week</p>
-          </div>
-          <div className="text-center">
-            <p className="text-2xl font-semibold text-purple-600">
-              {users.filter(u => new Date(u.created_at) > new Date(Date.now() - 24 * 60 * 60 * 1000)).length}
-            </p>
-            <p className="text-sm text-gray-500">New Today</p>
+      <div className="card">
+        <div className="card-body">
+          <h3 className="card-title mb-4">Statistics</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="text-center">
+              <p className="stats-value text-blue-600">{users.length}</p>
+              <p className="stats-label">Total Users</p>
+            </div>
+            <div className="text-center">
+              <p className="stats-value text-green-600">
+                {users.filter(u => new Date(u.created_at) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)).length}
+              </p>
+              <p className="stats-label">New This Week</p>
+            </div>
+            <div className="text-center">
+              <p className="stats-value text-purple-600">
+                {users.filter(u => new Date(u.created_at) > new Date(Date.now() - 24 * 60 * 60 * 1000)).length}
+              </p>
+              <p className="stats-label">New Today</p>
+            </div>
           </div>
         </div>
       </div>

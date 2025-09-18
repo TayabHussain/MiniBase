@@ -198,7 +198,6 @@ export default function DataBrowserPage() {
   if (tables.length === 0) {
     return (
       <div className="text-center py-12">
-        <span className="text-4xl mb-4 block">📝</span>
         <h3 className="text-lg font-medium text-gray-900 mb-2">No Tables Found</h3>
         <p className="text-gray-500">Create tables first to browse their data</p>
       </div>
@@ -206,63 +205,65 @@ export default function DataBrowserPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="page-container">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="page-header">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Data Browser</h1>
-          <p className="text-gray-600">Browse and edit your table data</p>
+          <h1 className="page-title">Data Browser</h1>
+          <p className="page-subtitle">Browse and edit your table data</p>
         </div>
 
         {selectedTable && (
           <button
             onClick={() => setShowAddForm(true)}
-            className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors"
+            className="btn btn-success"
           >
-            ➕ Add Record
+            + Add Record
           </button>
         )}
       </div>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-md p-4">
-          <p className="text-red-700">{error}</p>
+        <div className="alert alert-error">
+          <p>{error}</p>
           <button
             onClick={() => setError('')}
             className="text-red-500 hover:text-red-700 ml-2"
           >
-            ✕
+            ×
           </button>
         </div>
       )}
 
       {/* Table Selection */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Select Table:
-        </label>
-        <select
-          value={selectedTable}
-          onChange={(e) => {
-            setSelectedTable(e.target.value);
-            setCurrentPage(0);
-          }}
-          className="w-full max-w-md px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-        >
-          {tables.map((table) => (
-            <option key={table.name} value={table.name}>
-              {table.name} ({table.rowCount} records)
-            </option>
-          ))}
-        </select>
+      <div className="card">
+        <div className="card-body">
+          <div className="form-group">
+            <label className="form-label">Select Table:</label>
+            <select
+              value={selectedTable}
+              onChange={(e) => {
+                setSelectedTable(e.target.value);
+                setCurrentPage(0);
+              }}
+              className="form-select max-w-md"
+            >
+              {tables.map((table) => (
+                <option key={table.name} value={table.name}>
+                  {table.name} ({table.rowCount} records)
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
       </div>
 
       {/* Data Table */}
       {selectedTable && (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-          <div className="px-6 py-4 border-b border-gray-200">
+        <div className="card">
+          <div className="card-header">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-medium text-gray-900">
+              <h3 className="card-title">
                 Table: {selectedTable}
               </h3>
               {tableData && (
@@ -281,24 +282,24 @@ export default function DataBrowserPage() {
           ) : tableData && tableData.data.length > 0 ? (
             <>
               <div className="overflow-x-auto">
-                <table className="min-w-full">
-                  <thead className="bg-gray-50">
+                <table className="table">
+                  <thead className="table-header">
                     <tr>
                       {getColumns().map((column) => (
-                        <th key={column} className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th key={column} className="table-header-cell">
                           {column}
                         </th>
                       ))}
-                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="table-header-cell text-right">
                         Actions
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
+                  <tbody className="table-body">
                     {tableData.data.map((row, index) => (
                       <tr key={row.id || index} className="hover:bg-gray-50">
                         {getColumns().map((column) => (
-                          <td key={column} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          <td key={column} className="table-cell">
                             {editingRow === index ? (
                               <input
                                 type="text"
@@ -307,7 +308,7 @@ export default function DataBrowserPage() {
                                   ...editingData,
                                   [column]: e.target.value
                                 })}
-                                className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                                className="form-input"
                               />
                             ) : (
                               <span className="max-w-xs truncate block">
@@ -316,12 +317,12 @@ export default function DataBrowserPage() {
                             )}
                           </td>
                         ))}
-                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <td className="table-cell text-right">
                           {editingRow === index ? (
                             <div className="space-x-2">
                               <button
                                 onClick={() => handleSave(row.id)}
-                                className="text-green-600 hover:text-green-900"
+                                className="btn btn-sm btn-success"
                               >
                                 Save
                               </button>
@@ -330,7 +331,7 @@ export default function DataBrowserPage() {
                                   setEditingRow(null);
                                   setEditingData({});
                                 }}
-                                className="text-gray-600 hover:text-gray-900"
+                                className="btn btn-sm btn-secondary"
                               >
                                 Cancel
                               </button>
@@ -339,13 +340,13 @@ export default function DataBrowserPage() {
                             <div className="space-x-2">
                               <button
                                 onClick={() => handleEdit(row, index)}
-                                className="text-blue-600 hover:text-blue-900"
+                                className="btn btn-sm btn-primary"
                               >
                                 Edit
                               </button>
                               <button
                                 onClick={() => handleDelete(row.id)}
-                                className="text-red-600 hover:text-red-900"
+                                className="btn btn-sm btn-danger"
                               >
                                 Delete
                               </button>
@@ -385,7 +386,6 @@ export default function DataBrowserPage() {
             </>
           ) : (
             <div className="text-center py-12">
-              <span className="text-4xl mb-4 block">📋</span>
               <h4 className="text-lg font-medium text-gray-900 mb-2">No Records Found</h4>
               <p className="text-gray-500 mb-4">This table is empty</p>
               <button

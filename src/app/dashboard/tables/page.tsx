@@ -152,29 +152,29 @@ export default function TablesPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="page-container">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="page-header">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Tables</h1>
-          <p className="text-gray-600">Manage your database tables and schema</p>
+          <h1 className="page-title">Tables</h1>
+          <p className="page-subtitle">Manage your database tables and schema</p>
         </div>
         <button
           onClick={() => setShowCreateForm(true)}
-          className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
+          className="btn btn-primary"
         >
-          ➕ Create Table
+          + Create Table
         </button>
       </div>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-md p-4">
-          <p className="text-red-700">{error}</p>
+        <div className="alert alert-error">
+          <p>{error}</p>
           <button
             onClick={() => setError('')}
             className="text-red-500 hover:text-red-700 ml-2"
           >
-            ✕
+            ×
           </button>
         </div>
       )}
@@ -182,21 +182,21 @@ export default function TablesPage() {
       {/* Tables List */}
       <div className="grid gap-6">
         {tables.map((table) => (
-          <div key={table.name} className="bg-white rounded-lg shadow-sm border border-gray-200">
-            <div className="px-6 py-4 border-b border-gray-200">
+          <div key={table.name} className="card">
+            <div className="card-header">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-lg font-medium text-gray-900">{table.name}</h3>
+                  <h3 className="card-title">{table.name}</h3>
                   <p className="text-sm text-gray-500">{table.rowCount} records</p>
                 </div>
                 <div className="flex space-x-2">
-                  <button className="text-blue-600 hover:text-blue-800 text-sm">
+                  <button className="btn btn-sm btn-secondary">
                     View Data
                   </button>
                   {!['admin_users', 'app_users'].includes(table.name) && (
                     <button
                       onClick={() => handleDeleteTable(table.name)}
-                      className="text-red-600 hover:text-red-800 text-sm"
+                      className="btn btn-sm btn-danger"
                     >
                       Delete
                     </button>
@@ -204,31 +204,31 @@ export default function TablesPage() {
                 </div>
               </div>
             </div>
-            <div className="px-6 py-4">
+            <div className="card-body">
               <div className="overflow-x-auto">
-                <table className="min-w-full">
-                  <thead>
-                    <tr className="border-b border-gray-200">
-                      <th className="text-left py-2 text-sm font-medium text-gray-500">Column</th>
-                      <th className="text-left py-2 text-sm font-medium text-gray-500">Type</th>
-                      <th className="text-left py-2 text-sm font-medium text-gray-500">Nullable</th>
-                      <th className="text-left py-2 text-sm font-medium text-gray-500">Default</th>
-                      <th className="text-left py-2 text-sm font-medium text-gray-500">Primary Key</th>
+                <table className="table">
+                  <thead className="table-header">
+                    <tr>
+                      <th className="table-header-cell">Column</th>
+                      <th className="table-header-cell">Type</th>
+                      <th className="table-header-cell">Nullable</th>
+                      <th className="table-header-cell">Default</th>
+                      <th className="table-header-cell">Primary Key</th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody className="table-body">
                     {table.schema.columns.map((column, index) => (
-                      <tr key={index} className="border-b border-gray-100">
-                        <td className="py-2 text-sm font-medium text-gray-900">{column.name}</td>
-                        <td className="py-2 text-sm text-gray-600">{column.type}</td>
-                        <td className="py-2 text-sm text-gray-600">
-                          {column.notnull ? '❌' : '✅'}
+                      <tr key={index}>
+                        <td className="table-cell font-medium">{column.name}</td>
+                        <td className="table-cell">{column.type}</td>
+                        <td className="table-cell">
+                          {column.notnull ? 'No' : 'Yes'}
                         </td>
-                        <td className="py-2 text-sm text-gray-600">
+                        <td className="table-cell">
                           {column.dflt_value || '-'}
                         </td>
-                        <td className="py-2 text-sm text-gray-600">
-                          {column.pk ? '🔑' : '-'}
+                        <td className="table-cell">
+                          {column.pk ? 'Yes' : 'No'}
                         </td>
                       </tr>
                     ))}
@@ -240,13 +240,12 @@ export default function TablesPage() {
         ))}
 
         {tables.length === 0 && (
-          <div className="text-center py-12 bg-white rounded-lg shadow-sm border border-gray-200">
-            <span className="text-4xl mb-4 block">📝</span>
+          <div className="card text-center py-12">
             <h3 className="text-lg font-medium text-gray-900 mb-2">No Tables Found</h3>
             <p className="text-gray-500 mb-4">Create your first table to get started</p>
             <button
               onClick={() => setShowCreateForm(true)}
-              className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
+              className="btn btn-primary"
             >
               Create Table
             </button>
@@ -259,21 +258,21 @@ export default function TablesPage() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
             <form onSubmit={handleCreateTable}>
-              <div className="px-6 py-4 border-b border-gray-200">
-                <h3 className="text-lg font-medium text-gray-900">Create New Table</h3>
+              <div className="card-header">
+                <h3 className="card-title">Create New Table</h3>
               </div>
 
-              <div className="px-6 py-4 space-y-4">
+              <div className="card-body space-y-4">
                 {/* Table Name */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                <div className="form-group">
+                  <label className="form-label">
                     Table Name
                   </label>
                   <input
                     type="text"
                     value={newTableName}
                     onChange={(e) => setNewTableName(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    className="form-input"
                     placeholder="users, posts, orders..."
                     required
                   />
@@ -336,7 +335,7 @@ export default function TablesPage() {
                               onClick={() => removeColumn(index)}
                               className="text-red-600 hover:text-red-800"
                             >
-                              ✕
+                              ×
                             </button>
                           )}
                         </div>
