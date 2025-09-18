@@ -163,6 +163,33 @@ export async function DELETE(
       );
     }
 
+    // Protect main admin user from deletion
+    if (tableName === 'admin_users') {
+      // Get the user being deleted to check if it's the main admin
+      const userToDelete = db.executeSQL(`SELECT id, username FROM admin_users WHERE id = ?`, [recordId]);
+      
+      if (userToDelete && userToDelete.length > 0) {
+        const user = userToDelete[0];
+        
+        // Prevent deletion of the main admin user (username: 'admin')
+        if (user.username === 'admin') {
+          return NextResponse.json(
+            { error: 'Cannot delete the main admin account' },
+            { status: 403 }
+          );
+        }
+        
+        // Prevent deletion if it would leave no admin users
+        const adminCount = db.executeSQL(`SELECT COUNT(*) as count FROM admin_users`)[0].count;
+        if (adminCount <= 1) {
+          return NextResponse.json(
+            { error: 'Cannot delete the last remaining admin user' },
+            { status: 403 }
+          );
+        }
+      }
+    }
+
     const success = db.deleteFromTable(tableName, recordId);
 
     if (!success) {

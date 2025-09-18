@@ -66,14 +66,8 @@ class MiniBaseDB {
       )
     `);
 
-    // Create default admin user if none exists
-    const adminExists = this.db.prepare('SELECT COUNT(*) as count FROM admin_users').get() as { count: number };
-    if (adminExists.count === 0) {
-      const defaultPassword = 'admin123';
-      const hashedPassword = bcrypt.hashSync(defaultPassword, 10);
-      this.db.prepare('INSERT INTO admin_users (username, password_hash) VALUES (?, ?)').run('admin', hashedPassword);
-      console.log('Default admin user created: admin / admin123');
-    }
+    // Ensure main admin user exists
+    this.ensureMainAdminExists();
   }
 
   // Admin user methods
@@ -85,6 +79,29 @@ class MiniBaseDB {
     const hashedPassword = bcrypt.hashSync(password, 10);
     const result = this.db.prepare('INSERT INTO admin_users (username, password_hash) VALUES (?, ?) RETURNING *').get(username, hashedPassword) as AdminUser;
     return result;
+  }
+
+  getAllAdminUsers(): AdminUser[] {
+    return this.db.prepare('SELECT * FROM admin_users ORDER BY created_at ASC').all() as AdminUser[];
+  }
+
+  // Ensure main admin exists (used for recovery)
+  ensureMainAdminExists(): boolean {
+    try {
+      const mainAdmin = this.db.prepare('SELECT id FROM admin_users WHERE username = ?').get('admin') as { id: number } | undefined;
+      
+      if (!mainAdmin) {
+        const defaultPassword = 'admin123';
+        const hashedPassword = bcrypt.hashSync(defaultPassword, 10);
+        this.db.prepare('INSERT INTO admin_users (username, password_hash) VALUES (?, ?)').run('admin', hashedPassword);
+        console.log('Main admin user restored: admin / admin123');
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Error ensuring main admin exists:', error);
+      return false;
+    }
   }
 
   // Schema introspection methods
@@ -172,6 +189,25 @@ class MiniBaseDB {
 
   deleteFromTable(tableName: string, id: number): boolean {
     try {
+      // Protect main admin user from deletion
+      if (tableName === 'admin_users') {
+        // Get the user being deleted to check if it's the main admin
+        const userToDelete = this.db.prepare(`SELECT id, username FROM admin_users WHERE id = ?`).get(id) as { id: number; username: string } | undefined;
+        
+        if (userToDelete) {
+          // Prevent deletion of the main admin user (username: 'admin')
+          if (userToDelete.username === 'admin') {
+            throw new Error('Cannot delete the main admin account');
+          }
+          
+          // Prevent deletion if it would leave no admin users
+          const adminCount = this.db.prepare(`SELECT COUNT(*) as count FROM admin_users`).get() as { count: number };
+          if (adminCount.count <= 1) {
+            throw new Error('Cannot delete the last remaining admin user');
+          }
+        }
+      }
+
       const result = this.db.prepare(`DELETE FROM ${tableName} WHERE id = ?`).run(id);
       return result.changes > 0;
     } catch (error) {
