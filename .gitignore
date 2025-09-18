@@ -51,3 +51,4 @@ database.sqlite-shm
 .idea/
 *.swp
 *.swo
+.env
